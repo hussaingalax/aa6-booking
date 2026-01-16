@@ -42,11 +42,16 @@ export default function Home() {
         <button
           disabled={!canContinue}
           onClick={() => {
-            // store session
-            localStorage.setItem("AA6_NAME", name.trim());
-            localStorage.setItem("AA6_MOBILE", mobile);
-            nav("/otp");
-          }}
+  localStorage.setItem("AA6_NAME", name.trim());
+  localStorage.setItem("AA6_MOBILE", mobile);
+
+  const generatedOtp = String(Math.floor(1000 + Math.random() * 9000));
+  localStorage.setItem("AA6_DEV_OTP", generatedOtp);
+  localStorage.setItem("AA6_OTP_CREATED_AT", String(Date.now()));
+
+  nav("/otp");
+}}
+
           style={{
             width: "100%",
             marginTop: 14,
