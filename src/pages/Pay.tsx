@@ -3,35 +3,55 @@ import { useNavigate } from "react-router-dom";
 import QRCode from "qrcode";
 
 function buildUpiUri(pa: string, pn: string, am: number, tn: string) {
-  const params = new URLSearchParams({ pa, pn, am: String(am), cu: "INR", tn });
+  const params = new URLSearchParams({
+    pa,
+    pn,
+    am: String(am),
+    cu: "INR",
+    tn,
+  });
   return `upi://pay?${params.toString()}`;
+}
+
+function normalizeMobile(m: string) {
+  // keeps last 10 digits only (handles +91, spaces, etc.)
+  return (m || "").replace(/\D/g, "").slice(-10);
 }
 
 export default function Pay() {
   const nav = useNavigate();
-  const name = localStorage.getItem("AA6_NAME") || "user";
-  const mobile = localStorage.getItem("AA6_MOBILE") || "";
 
+  const name = localStorage.getItem("AA6_NAME") || "user";
+  const mobileRaw = localStorage.getItem("AA6_MOBILE") || "";
+  const mobile = normalizeMobile(mobileRaw);
+
+  // UPI settings
   const UPI_ID = "trueselfmindgym@okicici";
+  const PAYEE_NAME = "Arithuyil Arivom";
+
+  // Test rule: only this number pays 1 rupee
   const TEST_NUMBER = "9789489288";
   const amount = mobile === TEST_NUMBER ? 1 : 8500;
 
-  const upiUri = useMemo(
-    () => buildUpiUri(UPI_ID, "Arithuyil Arivom", amount, `AA6 Payment for ${name}`),
-    [UPI_ID, amount, name]
-  );
+  const upiUri = useMemo(() => {
+    const note = `AA6 Payment for ${name}`;
+    return buildUpiUri(UPI_ID, PAYEE_NAME, amount, note);
+  }, [UPI_ID, PAYEE_NAME, amount, name]);
 
   const [txn, setTxn] = useState("");
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
+  const [qrErr, setQrErr] = useState<string>("");
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
+        setQrErr("");
+        setQrDataUrl("");
         const url = await QRCode.toDataURL(upiUri, { margin: 1, scale: 8 });
         if (!cancelled) setQrDataUrl(url);
-      } catch {
-        if (!cancelled) setQrDataUrl("");
+      } catch (e) {
+        if (!cancelled) setQrErr("QR generate failed. Please use UPI link below.");
       }
     })();
     return () => {
@@ -41,20 +61,60 @@ export default function Pay() {
 
   return (
     <div style={{ maxWidth: 520, margin: "0 auto", padding: 20 }}>
-      <button onClick={() => nav("/offer")} style={{ background: "transparent", border: "none", cursor: "pointer", marginBottom: 10 }}>
+      <button
+        onClick={() => nav("/offer")}
+        style={{ background: "transparent", border: "none", cursor: "pointer", marginBottom: 10 }}
+      >
         ← Back to offer
       </button>
 
-      <div style={{ background: "#fff", borderRadius: 18, padding: 16, border: "1px solid #eef2f7", boxShadow: "0 10px 25px rgba(0,0,0,0.06)" }}>
-        <div style={{ display: "flex", gap: 10, alignItems: "center", padding: 12, borderRadius: 14, background: "#ecfdf5", border: "1px solid #bbf7d0" }}>
-          ✅ <div><b>100% Safe & Verified Payment</b><div style={{ fontSize: 12, opacity: 0.7 }}>Your payment is secure and encrypted</div></div>
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 18,
+          padding: 16,
+          border: "1px solid #eef2f7",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            alignItems: "center",
+            padding: 12,
+            borderRadius: 14,
+            background: "#ecfdf5",
+            border: "1px solid #bbf7d0",
+          }}
+        >
+          ✅{" "}
+          <div>
+            <b>100% Safe & Verified Payment</b>
+            <div style={{ fontSize: 12, opacity: 0.7 }}>Your payment is secure and encrypted</div>
+          </div>
         </div>
 
         <h2 style={{ textAlign: "center", marginTop: 16 }}>Payment Amount for {name}</h2>
-        <div style={{ textAlign: "center", fontSize: 36, fontWeight: 900 }}>₹{amount.toLocaleString("en-IN")}/-</div>
+        <div style={{ textAlign: "center", fontSize: 36, fontWeight: 900 }}>
+          ₹{amount.toLocaleString("en-IN")}/-
+        </div>
+
+        {/* (Optional) debug - remove later */}
+        <div style={{ marginTop: 6, fontSize: 12, opacity: 0.6, textAlign: "center" }}>
+          Debug: mobile = {mobile}
+        </div>
 
         {/* QR + UPI block */}
-        <div style={{ marginTop: 14, padding: 12, borderRadius: 14, border: "1px dashed #cbd5e1", background: "#f8fafc" }}>
+        <div
+          style={{
+            marginTop: 14,
+            padding: 12,
+            borderRadius: 14,
+            border: "1px dashed #cbd5e1",
+            background: "#f8fafc",
+          }}
+        >
           <div style={{ fontWeight: 800 }}>Scan & Pay — 100% Safe UPI Payment</div>
 
           <div style={{ marginTop: 12, display: "flex", justifyContent: "center" }}>
@@ -62,21 +122,49 @@ export default function Pay() {
               <img
                 src={qrDataUrl}
                 alt="UPI QR"
-                style={{ width: 220, height: 220, borderRadius: 14, border: "1px solid #e5e7eb", background: "#fff", padding: 10 }}
+                style={{
+                  width: 220,
+                  height: 220,
+                  borderRadius: 14,
+                  border: "1px solid #e5e7eb",
+                  background: "#fff",
+                  padding: 10,
+                }}
               />
             ) : (
-              <div style={{ width: 220, height: 220, borderRadius: 14, border: "1px solid #e5e7eb", background: "#fff", display: "grid", placeItems: "center" }}>
+              <div
+                style={{
+                  width: 220,
+                  height: 220,
+                  borderRadius: 14,
+                  border: "1px solid #e5e7eb",
+                  background: "#fff",
+                  display: "grid",
+                  placeItems: "center",
+                  fontWeight: 800,
+                  opacity: 0.75,
+                }}
+              >
                 Generating QR...
               </div>
             )}
           </div>
+
+          {qrErr && <div style={{ marginTop: 10, color: "#dc2626", fontWeight: 800 }}>{qrErr}</div>}
 
           <div style={{ marginTop: 12, fontWeight: 800 }}>UPI ID</div>
           <div style={{ marginTop: 6, display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
             <div style={{ wordBreak: "break-all" }}>{UPI_ID}</div>
             <button
               onClick={() => navigator.clipboard.writeText(UPI_ID)}
-              style={{ border: "1px solid #e5e7eb", borderRadius: 10, padding: "8px 10px", cursor: "pointer", background: "#fff" }}
+              style={{
+                border: "1px solid #e5e7eb",
+                borderRadius: 10,
+                padding: "8px 10px",
+                cursor: "pointer",
+                background: "#fff",
+                fontWeight: 800,
+              }}
             >
               Copy
             </button>
@@ -100,7 +188,16 @@ export default function Pay() {
         />
 
         <h3 style={{ marginTop: 16 }}>Upload Payment Screenshot *</h3>
-        <div style={{ marginTop: 8, padding: 18, borderRadius: 14, border: "2px dashed #cbd5e1", textAlign: "center", opacity: 0.8 }}>
+        <div
+          style={{
+            marginTop: 8,
+            padding: 18,
+            borderRadius: 14,
+            border: "2px dashed #cbd5e1",
+            textAlign: "center",
+            opacity: 0.8,
+          }}
+        >
           (Next Step) Supabase Storage upload add பண்ணுவோம்
         </div>
 
