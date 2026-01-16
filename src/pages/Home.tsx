@@ -21,12 +21,30 @@ export default function Home() {
           marginBottom: 14,
         }}
       >
-        <div style={{ fontWeight: 900, fontSize: 18 }}>Arithuyil Arivom • Advance Level-1</div>
-        <div style={{ opacity: 0.95, marginTop: 4, fontWeight: 800 }}>6th Batch Registration</div>
+        {/* Title */}
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+          <span
+            style={{
+              fontWeight: 1000,
+              fontSize: 20,
+              padding: "6px 12px",
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.22)",
+              border: "1px solid rgba(255,255,255,0.30)",
+              letterSpacing: 0.5,
+            }}
+          >
+            ARITHUYIL ARIVOM
+          </span>
+
+          <span style={{ fontWeight: 900, fontSize: 16, opacity: 0.98 }}>
+            Advance Level-1 • 6th Batch Registration
+          </span>
+        </div>
 
         <div
           style={{
-            marginTop: 10,
+            marginTop: 12,
             background: "rgba(255,255,255,0.16)",
             border: "1px solid rgba(255,255,255,0.25)",
             padding: 12,
@@ -52,15 +70,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div style={{ marginTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
-            <div style={{ fontWeight: 900 }}>
-              <span style={{ opacity: 0.95 }}>Original: </span>
-              <span style={{ textDecoration: "line-through", opacity: 0.95 }}>₹22,000</span>
-            </div>
-            <div style={{ fontWeight: 900, fontSize: 18 }}>Now: ₹8,500</div>
-          </div>
-
-          <div style={{ marginTop: 10, padding: 10, borderRadius: 12, background: "rgba(255,255,255,0.14)" }}>
+          {/* Topics */}
+          <div style={{ marginTop: 12, padding: 12, borderRadius: 14, background: "rgba(255,255,255,0.14)" }}>
             <div style={{ fontWeight: 900 }}>Topics Covered (Completely Practical)</div>
             <ol style={{ marginTop: 8, marginBottom: 0, paddingLeft: 18, lineHeight: 1.5 }}>
               <li>Self Hypnotism</li>
@@ -74,8 +85,23 @@ export default function Home() {
             </ol>
           </div>
 
-          <div style={{ marginTop: 10, fontSize: 12, opacity: 0.95 }}>
-            For details call: <b>9840851295</b>
+          {/* Contact highlight */}
+          <div
+            style={{
+              marginTop: 12,
+              padding: 12,
+              borderRadius: 14,
+              background: "rgba(0,0,0,0.18)",
+              border: "1px solid rgba(255,255,255,0.25)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 12,
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ fontWeight: 1000, fontSize: 16 }}>Ayyappan Leelaram</div>
+            <div style={{ fontWeight: 1000, fontSize: 18 }}>9840851295</div>
           </div>
         </div>
       </div>
