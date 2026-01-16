@@ -13,23 +13,31 @@ export default function Success() {
   const name = localStorage.getItem("AA6_NAME") || "user";
   const mobile = localStorage.getItem("AA6_MOBILE") || "";
   const bookingIdFromPay = localStorage.getItem("AA6_BOOKING_ID") || "";
-  const bookingCode = useMemo(() => bookingIdFromPay || makeCode(), [bookingIdFromPay]);
+
+const bookingCode = useMemo(() => {
+  // If UUID exists, take digits from it and make 6-digit. Else random 6-digit.
+  const digits = (bookingIdFromPay || "").replace(/\D/g, "");
+  if (digits.length >= 6) return digits.slice(-6);
+  return String(Math.floor(100000 + Math.random() * 900000));
+}, [bookingIdFromPay]);
+
 
   const amount = 8500; // display only (DB has actual). keep same for now.
 
   const waAdmin = "9789489288"; // Business WhatsApp
   const waText = encodeURIComponent(
-    `✅ AA6 Booking Confirmed\n\n` +
-      `Name: ${name}\n` +
-      `Mobile: +91 ${mobile}\n` +
-      `Booking ID: ${bookingCode}\n` +
-      `Amount: ₹${amount}/-\n\n` +
-      `Class: Advance Level-1 Practical Class\n` +
-      `Batch: 6th Batch\n` +
-      `Date: 1st Feb 2026 (Sunday)\n` +
-      `Venue: RV Towers, Guindy\n\n` +
-      `Please verify payment & confirm seat.`
-  );
+  `AA6 Booking Confirmed\n\n` +
+    `Name: ${name}\n` +
+    `Mobile: +91 ${mobile}\n` +
+    `Booking ID: ${bookingCode}\n` +
+    `Amount: ₹${amount}/-\n\n` +
+    `Class: Advance Level-1 Practical Class\n` +
+    `Batch: 6th Batch\n` +
+    `Date: 1st Feb 2026 (Sunday)\n` +
+    `Venue: RV Towers, Guindy\n\n` +
+    `Please verify payment & confirm seat.`
+);
+
 
   const waLink = `https://wa.me/91${waAdmin}?text=${waText}`;
 
@@ -70,7 +78,7 @@ export default function Success() {
         </div>
 
         <div style={{ marginTop: 14, padding: 12, borderRadius: 14, background: "#fff7ed", border: "1px solid #fde68a", fontWeight: 800 }}>
-          ✨ Your booking is confirmed. Our team will contact you shortly.
+           Your booking is confirmed. Our team will contact you shortly.
         </div>
 
         <button
