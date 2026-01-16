@@ -26,7 +26,7 @@ const bookingCode = useMemo(() => {
 
   const waAdmin = "9789489288"; // Business WhatsApp
   const waText = encodeURIComponent(
-  `AA6 Booking Confirmed\n\n` +
+  `Arithuyil Arivom\n\n` +
     `Name: ${name}\n` +
     `Mobile: +91 ${mobile}\n` +
     `Booking ID: ${bookingCode}\n` +
