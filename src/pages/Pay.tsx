@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import QRCode from "qrcode";
 import { supabase } from "../lib/supabase";
-
+localStorage.setItem("AA6_AMOUNT", String(amount));
 function buildUpiUri(pa: string, pn: string, am: number, tn: string) {
   // IMPORTANT: keep it simple and properly encoded
   const params = new URLSearchParams({
