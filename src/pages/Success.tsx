@@ -1,44 +1,36 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-function makeCode() {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let out = "";
-  for (let i = 0; i < 10; i++) out += chars[Math.floor(Math.random() * chars.length)];
-  return out;
-}
-
 export default function Success() {
   const nav = useNavigate();
+
   const name = localStorage.getItem("AA6_NAME") || "user";
   const mobile = localStorage.getItem("AA6_MOBILE") || "";
   const bookingIdFromPay = localStorage.getItem("AA6_BOOKING_ID") || "";
+  const amount = Number(localStorage.getItem("AA6_AMOUNT") || "8500");
 
-const bookingCode = useMemo(() => {
-  // If UUID exists, take digits from it and make 6-digit. Else random 6-digit.
-  const digits = (bookingIdFromPay || "").replace(/\D/g, "");
-  if (digits.length >= 6) return digits.slice(-6);
-  return String(Math.floor(100000 + Math.random() * 900000));
-}, [bookingIdFromPay]);
+  const bookingCode = useMemo(() => {
+    // Prefer a stable, short code from booking UUID
+    const clean = (bookingIdFromPay || "").replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+    if (clean.length >= 8) return clean.slice(-8); // last 8 chars
+    if (clean.length >= 6) return clean.slice(-6);
+    // fallback random 6 digit
+    return String(Math.floor(100000 + Math.random() * 900000));
+  }, [bookingIdFromPay]);
 
-
-  const amount = 8500; // display only (DB has actual). keep same for now.
-
-  const waAdmin = "9789489288"; // Business WhatsApp
+  const waAdmin = "9789489288";
   const waText = encodeURIComponent(
-  `Arithuyil Arivom\n\n` +
-    `Name: ${name}\n` +
-    `Mobile: +91 ${mobile}\n` +
-    `Booking ID: ${bookingCode}\n` +
-    `Amount: ₹${amount}/-\n\n` +
-    `Class: Advance Level-1 Practical Class\n` +
-    `Batch: 6th Batch\n` +
-    `Date: 1st Feb 2026 (Sunday)\n` +
-    `Venue: RV Towers, Guindy\n\n` +
-    `Please verify payment & confirm seat.`
-);
-
-
+    `Arithuyil Arivom\n\n` +
+      `Name: ${name}\n` +
+      `Mobile: +91 ${mobile}\n` +
+      `Booking ID: ${bookingCode}\n` +
+      `Amount: ₹${amount}/-\n\n` +
+      `Class: Advance Level-1 Practical Class\n` +
+      `Batch: 6th Batch\n` +
+      `Date: 1st Feb 2026 (Sunday)\n` +
+      `Venue: RV Towers, Guindy\n\n` +
+      `Please verify payment & confirm seat.`
+  );
   const waLink = `https://wa.me/91${waAdmin}?text=${waText}`;
 
   return (
@@ -54,7 +46,7 @@ const bookingCode = useMemo(() => {
         }}
       >
         <div style={{ fontSize: 48 }}>✅</div>
-        <h1 style={{ margin: "6px 0" }}>Booking Confirmed Successfully</h1>
+        <h1 style={{ margin: "6px 0" }}>Payment Submitted Successfully</h1>
         <div style={{ opacity: 0.8 }}>Thank you, {name}! 🎉</div>
 
         <div style={{ marginTop: 16, padding: 16, borderRadius: 16, background: "#4f46e5", color: "#fff" }}>
@@ -78,7 +70,7 @@ const bookingCode = useMemo(() => {
         </div>
 
         <div style={{ marginTop: 14, padding: 12, borderRadius: 14, background: "#fff7ed", border: "1px solid #fde68a", fontWeight: 800 }}>
-           Your booking is confirmed. Our team will contact you shortly.
+          We received your payment details. Our team will verify and confirm your seat shortly.
         </div>
 
         <button
@@ -104,7 +96,7 @@ const bookingCode = useMemo(() => {
           <div style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: 8 }}>
             <div style={{ opacity: 0.7 }}>Name</div><div style={{ fontWeight: 800 }}>{name}</div>
             <div style={{ opacity: 0.7 }}>Mobile</div><div style={{ fontWeight: 800 }}>+91 {mobile}</div>
-            <div style={{ opacity: 0.7 }}>Amount Paid</div><div style={{ fontWeight: 800 }}>₹{amount.toLocaleString("en-IN")}/-</div>
+            <div style={{ opacity: 0.7 }}>Amount</div><div style={{ fontWeight: 800 }}>₹{amount.toLocaleString("en-IN")}/-</div>
           </div>
 
           <h3 style={{ marginTop: 16 }}>Class Details</h3>
