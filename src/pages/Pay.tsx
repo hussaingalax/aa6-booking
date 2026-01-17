@@ -35,13 +35,16 @@ export default function Pay() {
   const mobileRaw = localStorage.getItem("AA6_MOBILE") || "";
   const mobile = normalizeMobile(mobileRaw);
 
+  // Receiver (Payee)
   const UPI_ID = "trueselfmindgym@okicici";
   const PAYEE_NAME = "Arithuyil Arivom";
+  const RECEIVER_MOBILE = "7639600369"; // ✅ provided by you (UPI-linked)
 
+  // Amount
   const TEST_NUMBER = "9789489288";
   const amount = useMemo(() => (mobile === TEST_NUMBER ? 1 : 8500), [mobile]);
 
-  const note = `AA6 Payment for ${name}`;
+  const note = useMemo(() => `AA6 Payment for ${name}`, [name]);
 
   const upiUri = useMemo(
     () => buildUpiUri(UPI_ID, PAYEE_NAME, amount, note),
@@ -54,7 +57,6 @@ export default function Pay() {
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
-
   const [hint, setHint] = useState<string>("");
 
   useEffect(() => {
@@ -82,17 +84,6 @@ export default function Pay() {
 
   const canSubmit = txn.trim().length >= 6 && !!file && !busy;
 
-  function openUpi() {
-    setErr("");
-    try {
-      window.location.assign(upiUri);
-    } catch {
-      setErr(
-        "Unable to open UPI app. Please copy UPI ID and pay manually, then upload screenshot + UTR."
-      );
-    }
-  }
-
   function copyText(text: string, okMsg?: string) {
     navigator.clipboard
       .writeText(text)
@@ -107,7 +98,19 @@ export default function Pay() {
       });
   }
 
-  // Android app intents (only show buttons on Android)
+  function openUpi() {
+    setErr("");
+    try {
+      // Must be from user click
+      window.location.assign(upiUri);
+    } catch {
+      setErr(
+        "Unable to open UPI app. Please pay using Mobile Number / UPI ID and then upload screenshot + UTR."
+      );
+    }
+  }
+
+  // Android intents (better open reliability on Android)
   const gpayIntent = useMemo(
     () =>
       `intent://${upiUri.replace(
@@ -142,7 +145,7 @@ export default function Pay() {
     try {
       setBusy(true);
 
-      // 1) upload screenshot to Supabase Storage
+      // 1) Upload screenshot to Supabase Storage
       const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
       const safeExt = ["png", "jpg", "jpeg", "webp"].includes(ext) ? ext : "jpg";
       const path = `aa6/${Date.now()}-${mobile}-${Math.random()
@@ -160,7 +163,7 @@ export default function Pay() {
       const pub = supabase.storage.from("aa6-screenshots").getPublicUrl(path);
       const screenshotUrl = pub.data.publicUrl;
 
-      // 2) insert booking row
+      // 2) Insert booking row
       const ins = await supabase
         .from("aa6_bookings")
         .insert({
@@ -251,6 +254,7 @@ export default function Pay() {
           </div>
         )}
 
+        {/* QR + UPI */}
         <div
           style={{
             marginTop: 14,
@@ -327,6 +331,7 @@ export default function Pay() {
             </button>
           </div>
 
+          {/* MAIN: One-tap open UPI */}
           <button
             onClick={openUpi}
             style={{
@@ -344,24 +349,9 @@ export default function Pay() {
             Pay using UPI App (Open Now)
           </button>
 
-          {/* ✅ Android-only intent fallbacks */}
+          {/* Android-only direct app open buttons */}
           {isAndroid() && (
             <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
-              <button
-                onClick={() => window.location.assign(gpayIntent)}
-                style={{
-                  width: "100%",
-                  padding: 12,
-                  borderRadius: 14,
-                  border: "1px solid #e5e7eb",
-                  fontWeight: 900,
-                  cursor: "pointer",
-                  background: "#fff",
-                }}
-              >
-                Open in Google Pay
-              </button>
-
               <button
                 onClick={() => window.location.assign(phonePeIntent)}
                 style={{
@@ -375,6 +365,21 @@ export default function Pay() {
                 }}
               >
                 Open in PhonePe
+              </button>
+
+              <button
+                onClick={() => window.location.assign(gpayIntent)}
+                style={{
+                  width: "100%",
+                  padding: 12,
+                  borderRadius: 14,
+                  border: "1px solid #e5e7eb",
+                  fontWeight: 900,
+                  cursor: "pointer",
+                  background: "#fff",
+                }}
+              >
+                Open in Google Pay
               </button>
 
               <button
@@ -396,7 +401,7 @@ export default function Pay() {
                 onClick={() =>
                   copyText(
                     upiUri,
-                    "UPI payment link copied. You can paste it in notes/WhatsApp and open."
+                    "UPI payment link copied. Paste it in Notes/WhatsApp and tap to open."
                   )
                 }
                 style={{
@@ -422,17 +427,82 @@ export default function Pay() {
               lineHeight: 1.4,
             }}
           >
-            Note: ₹2,000 limit applies only when paying by selecting a QR image
-            from gallery in some UPI apps. Using the buttons above opens UPI
-            payment directly, which supports higher amounts.
+            If your UPI app shows “risk / lower amount” warning for UPI ID, use the
+            recommended Mobile Number method below.
           </div>
+        </div>
+
+        {/* ✅ Mobile-number method (risk-proof alternative) */}
+        <div
+          style={{
+            marginTop: 12,
+            padding: 12,
+            borderRadius: 14,
+            border: "1px solid #e5e7eb",
+            background: "#fff",
+          }}
+        >
+          <div style={{ fontWeight: 900 }}>Pay via Mobile Number (Recommended)</div>
+          <div style={{ fontSize: 12, opacity: 0.75, marginTop: 6, lineHeight: 1.4 }}>
+            If your UPI app shows warning, pay like this:
+            <br />
+            <b>UPI App → Pay → To Mobile Number</b> → enter number below → amount ₹{amount.toLocaleString("en-IN")} → add note.
+          </div>
+
+          <div
+            style={{
+              marginTop: 10,
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 10,
+              alignItems: "center",
+            }}
+          >
+            <div style={{ fontWeight: 900 }}>+91 {RECEIVER_MOBILE}</div>
+            <button
+              onClick={() =>
+                copyText(
+                  RECEIVER_MOBILE,
+                  "Receiver mobile number copied. Paste it in your UPI app."
+                )
+              }
+              style={{
+                border: "1px solid #e5e7eb",
+                borderRadius: 10,
+                padding: "8px 10px",
+                cursor: "pointer",
+                background: "#fff",
+                fontWeight: 800,
+              }}
+            >
+              Copy Number
+            </button>
+          </div>
+
+          <button
+            onClick={() =>
+              copyText(note, "Payment note copied. Paste it in remarks/message.")
+            }
+            style={{
+              width: "100%",
+              marginTop: 10,
+              padding: 12,
+              borderRadius: 14,
+              border: "1px solid #e5e7eb",
+              fontWeight: 900,
+              cursor: "pointer",
+              background: "#fff",
+            }}
+          >
+            Copy Payment Note
+          </button>
         </div>
 
         <h3 style={{ marginTop: 16 }}>Transaction ID / UTR Number *</h3>
         <input
           value={txn}
           onChange={(e) => setTxn(e.target.value)}
-          placeholder="Enter transaction ID from payment app"
+          placeholder="Enter transaction ID / UTR from payment app"
           style={{
             width: "100%",
             marginTop: 8,
