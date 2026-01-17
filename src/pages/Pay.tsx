@@ -33,8 +33,8 @@ export default function Pay() {
   const UPI_ID = "trueselfmindgym@okicici";
   const PAYEE_NAME = "Arithuyil Arivom";
 
-  const TEST_NUMBER = "9789489288";
-  const amount = mobile === TEST_NUMBER ? 1 : 8500;
+   const TEST_NUMBER = "9789489288";
+  const amount = useMemo(() => (mobile === TEST_NUMBER ? 1 : 8500), [mobile]);
 
   const note = `AA6 Payment for ${name}`;
 
@@ -330,7 +330,7 @@ export default function Pay() {
         </button>
 
         <div style={{ marginTop: 10, textAlign: "center", fontSize: 12, opacity: 0.7 }}>
-          Need help? Contact: 9789489288
+          Need help? Contact: 9840851295
         </div>
       </div>
     </div>
