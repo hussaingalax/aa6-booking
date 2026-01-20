@@ -27,7 +27,7 @@ export default function Success() {
       `Amount: ₹${amount}/-\n\n` +
       `Class: Advance Level-1 Practical Class\n` +
       `Batch: 6th Batch\n` +
-      `Date: 1st Feb 2026 (Sunday)\n` +
+      `Date: 15th Feb 2026 (Sunday)\n` +
       `Venue: RV Towers, Guindy\n\n` +
       `Please verify payment & confirm seat.`
   );
@@ -103,7 +103,7 @@ export default function Success() {
           <div style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: 8 }}>
             <div style={{ opacity: 0.7 }}>Class</div><div style={{ fontWeight: 800 }}>Advance Level-1 Practical Class</div>
             <div style={{ opacity: 0.7 }}>Batch</div><div style={{ fontWeight: 800 }}>6th Batch</div>
-            <div style={{ opacity: 0.7 }}>Date</div><div style={{ fontWeight: 800 }}>1st February 2026</div>
+            <div style={{ opacity: 0.7 }}>Date</div><div style={{ fontWeight: 800 }}>15th February 2026</div>
             <div style={{ opacity: 0.7 }}>Venue</div><div style={{ fontWeight: 800 }}>RV Towers, Guindy</div>
           </div>
         </div>
