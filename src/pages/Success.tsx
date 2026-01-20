@@ -28,7 +28,8 @@ export default function Success() {
       `Class: Advance Level-1 Practical Class\n` +
       `Batch: 6th Batch\n` +
       `Date: 15th Feb 2026 (Sunday)\n` +
-      `Venue: RV Towers, Guindy\n\n` +
+      `Venue: RV Towers, Guindy\n` +
+`Map: https://maps.app.goo.gl/NCruiwkWrxryVjrA8\n\n` +
       `Please verify payment & confirm seat.`
   );
   const waLink = `https://wa.me/91${waAdmin}?text=${waText}`;
@@ -104,7 +105,13 @@ export default function Success() {
             <div style={{ opacity: 0.7 }}>Class</div><div style={{ fontWeight: 800 }}>Advance Level-1 Practical Class</div>
             <div style={{ opacity: 0.7 }}>Batch</div><div style={{ fontWeight: 800 }}>6th Batch</div>
             <div style={{ opacity: 0.7 }}>Date</div><div style={{ fontWeight: 800 }}>15th February 2026</div>
-            <div style={{ opacity: 0.7 }}>Venue</div><div style={{ fontWeight: 800 }}>RV Towers, Guindy</div>
+            <div style={{ opacity: 0.7 }}>Venue</div>
+<div style={{ fontWeight: 800 }}>
+  RV Towers, Guindy{" "}
+  <a href="https://maps.app.goo.gl/NCruiwkWrxryVjrA8" target="_blank" rel="noreferrer">
+    (Map)
+  </a>
+</div>
           </div>
         </div>
 
