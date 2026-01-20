@@ -9,24 +9,24 @@ export default function Payments() {
     shortId: r.id.replace(/\D/g, "").slice(-6) || r.id.slice(-6),
   }));
 
-  async function setPayment(id: string, status: "completed" | "rejected" | "pending") {
-  const { data, error } = await supabase
+ async function setPayment(id: string, status: "completed" | "rejected" | "pending") {
+  const res = await supabase
     .from("aa6_bookings")
     .update({
       payment_status: status,
       verified_at: status === "completed" ? new Date().toISOString() : null,
     })
     .eq("id", id)
-    .select("id,payment_status,verified_at")
-    .single();
+    .select("id,payment_status,verified_at"); // ✅ no single()
 
-  if (error) {
-    alert(error.message);
-    console.error(error);
+  if (res.error) {
+    alert(res.error.message);
+    console.error(res.error);
     return;
   }
 
-  alert(`Saved: ${data.payment_status}`);
+  const row = res.data?.[0];
+  alert(`Saved: ${row?.payment_status ?? "no row returned"}`);
   reload();
 }
 
