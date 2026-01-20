@@ -172,7 +172,7 @@ export default function Pay() {
           amount,
           txn_id: txn.trim(),
           screenshot_url: screenshotUrl,
-          status: "pending",
+          payment_status: "pending",
         })
         .select("id")
         .single();
