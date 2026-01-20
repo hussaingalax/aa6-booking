@@ -10,13 +10,15 @@ export default function Payments() {
   }));
 
   async function setPayment(id: string, status: "completed" | "rejected" | "pending") {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("aa6_bookings")
     .update({
       payment_status: status,
       verified_at: status === "completed" ? new Date().toISOString() : null,
     })
-    .eq("id", id);
+    .eq("id", id)
+    .select("id,payment_status,verified_at")
+    .single();
 
   if (error) {
     alert(error.message);
@@ -24,6 +26,7 @@ export default function Payments() {
     return;
   }
 
+  alert(`Saved: ${data.payment_status}`);
   reload();
 }
 
