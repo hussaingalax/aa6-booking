@@ -25,25 +25,23 @@ export default function Payments() {
     setBusyId(id);
 
     try {
-      // ✅ Update payment status
       const upd = await supabase
         .from("aa6_bookings")
         .update({
           payment_status: status,
+          status, // ✅ keep both columns in sync
           verified_at: status === "completed" ? new Date().toISOString() : null,
         })
         .eq("id", id);
 
       if (upd.error) throw upd.error;
 
-      // ✅ Re-fetch to reflect changes in UI
       await reload();
-
       setMsg(status === "completed" ? "✅ Payment verified" : status === "rejected" ? "❌ Payment rejected" : "Updated");
     } catch (e: any) {
-      console.error("setPayment error:", e);
-      setMsg(`Error: ${e?.message || "Update failed"}`);
+      console.error(e);
       alert(e?.message || "Update failed");
+      setMsg(`Error: ${e?.message || "Update failed"}`);
     } finally {
       setBusyId(null);
     }
@@ -62,15 +60,7 @@ export default function Payments() {
       {loading && <div>Loading...</div>}
       {error && <div style={{ color: "#dc2626", fontWeight: 900 }}>{error}</div>}
 
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: 16,
-          border: "1px solid #eef2f7",
-          boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
-          overflow: "hidden",
-        }}
-      >
+      <div style={{ background: "#fff", borderRadius: 16, border: "1px solid #eef2f7", boxShadow: "0 10px 25px rgba(0,0,0,0.06)", overflow: "hidden" }}>
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 900 }}>
             <thead>
@@ -82,10 +72,9 @@ export default function Payments() {
                 ))}
               </tr>
             </thead>
-
             <tbody>
               {list.map((r: any) => {
-                const status: PayStatus = (r.payment_status || "pending") as PayStatus;
+                const st: PayStatus = (r.payment_status ?? r.status ?? "pending") as PayStatus;
 
                 return (
                   <tr key={r.id}>
@@ -93,24 +82,21 @@ export default function Payments() {
                     <td style={{ padding: 12, borderTop: "1px solid #eef2f7" }}>{r.name}</td>
                     <td style={{ padding: 12, borderTop: "1px solid #eef2f7" }}>{r.txn_id}</td>
                     <td style={{ padding: 12, borderTop: "1px solid #eef2f7" }}>₹{r.amount}</td>
-
                     <td style={{ padding: 12, borderTop: "1px solid #eef2f7" }}>
                       <span
                         style={{
                           padding: "6px 10px",
                           borderRadius: 999,
                           fontWeight: 900,
-                          background: status === "completed" ? "#dcfce7" : status === "rejected" ? "#fee2e2" : "#fef9c3",
+                          background: st === "completed" ? "#dcfce7" : st === "rejected" ? "#fee2e2" : "#fef9c3",
                         }}
                       >
-                        {status}
+                        {st}
                       </span>
                     </td>
-
                     <td style={{ padding: 12, borderTop: "1px solid #eef2f7" }}>
                       {r.verified_at ? new Date(r.verified_at).toLocaleString() : "-"}
                     </td>
-
                     <td style={{ padding: 12, borderTop: "1px solid #eef2f7" }}>
                       {r.screenshot_url ? (
                         <a href={r.screenshot_url} target="_blank" rel="noreferrer" style={{ fontWeight: 900 }}>
@@ -120,7 +106,6 @@ export default function Payments() {
                         "-"
                       )}
                     </td>
-
                     <td style={{ padding: 12, borderTop: "1px solid #eef2f7" }}>
                       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                         <button
@@ -138,7 +123,6 @@ export default function Payments() {
                         >
                           {busyId === r.id ? "Verifying..." : "Verify"}
                         </button>
-
                         <button
                           onClick={() => setPayment(r.id, "rejected")}
                           disabled={busyId === r.id}
