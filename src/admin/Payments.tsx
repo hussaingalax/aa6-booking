@@ -10,12 +10,22 @@ export default function Payments() {
   }));
 
   async function setPayment(id: string, status: "completed" | "rejected" | "pending") {
-    await supabase
-      .from("aa6_bookings")
-      .update({ payment_status: status, verified_at: status === "completed" ? new Date().toISOString() : null })
-      .eq("id", id);
-    reload();
+  const { error } = await supabase
+    .from("aa6_bookings")
+    .update({
+      payment_status: status,
+      verified_at: status === "completed" ? new Date().toISOString() : null,
+    })
+    .eq("id", id);
+
+  if (error) {
+    alert(error.message);
+    console.error(error);
+    return;
   }
+
+  reload();
+}
 
   return (
     <div>
