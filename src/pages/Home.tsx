@@ -54,7 +54,7 @@ export default function Home() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             <div>
               <div style={{ fontSize: 12, opacity: 0.9 }}>Date</div>
-              <div style={{ fontWeight: 900 }}>1st Feb 2026 (Sunday)</div>
+              <div style={{ fontWeight: 900 }}>15th Feb 2026 (Sunday)</div>
             </div>
             <div>
               <div style={{ fontSize: 12, opacity: 0.9 }}>Time</div>
