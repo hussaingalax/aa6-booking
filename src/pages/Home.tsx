@@ -63,6 +63,15 @@ export default function Home() {
             <div>
               <div style={{ fontSize: 12, opacity: 0.9 }}>Venue</div>
               <div style={{ fontWeight: 900 }}>RV Towers, Guindy</div>
+<a
+  href="https://maps.app.goo.gl/NCruiwkWrxryVjrA8"
+  target="_blank"
+  rel="noreferrer"
+  style={{ display: "inline-block", marginTop: 6, fontWeight: 900, color: "#fff", textDecoration: "underline" }}
+>
+  View Location on Google Maps
+</a>
+
             </div>
             <div>
               <div style={{ fontSize: 12, opacity: 0.9 }}>Mode</div>
