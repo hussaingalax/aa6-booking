@@ -18,7 +18,7 @@ export default function Success() {
     return String(Math.floor(100000 + Math.random() * 900000));
   }, [bookingIdFromPay]);
 
-  const waAdmin = "9789489288";
+  const waAdmin = "9840851295";
   const waText = encodeURIComponent(
     `Arithuyil Arivom\n\n` +
       `Name: ${name}\n` +
