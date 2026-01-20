@@ -80,7 +80,7 @@ export default function Offer() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           <div style={{ padding: 12, borderRadius: 14, background: "#f8fafc", border: "1px solid #eef2f7" }}>
             <div style={{ fontSize: 12, opacity: 0.7 }}>Date</div>
-            <div style={{ fontWeight: 900, marginTop: 4 }}>1st Feb 2026 (Sunday)</div>
+            <div style={{ fontWeight: 900, marginTop: 4 }}>15th Feb 2026 (Sunday)</div>
           </div>
           <div style={{ padding: 12, borderRadius: 14, background: "#f8fafc", border: "1px solid #eef2f7" }}>
             <div style={{ fontSize: 12, opacity: 0.7 }}>Venue</div>
