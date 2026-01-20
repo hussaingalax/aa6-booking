@@ -85,6 +85,14 @@ export default function Offer() {
           <div style={{ padding: 12, borderRadius: 14, background: "#f8fafc", border: "1px solid #eef2f7" }}>
             <div style={{ fontSize: 12, opacity: 0.7 }}>Venue</div>
             <div style={{ fontWeight: 900, marginTop: 4 }}>RV Towers, Guindy</div>
+<a
+  href="https://maps.app.goo.gl/NCruiwkWrxryVjrA8"
+  target="_blank"
+  rel="noreferrer"
+  style={{ display: "inline-block", marginTop: 6, fontWeight: 900, fontSize: 12 }}
+>
+  View Map
+</a>
           </div>
           <div style={{ padding: 12, borderRadius: 14, background: "#f8fafc", border: "1px solid #eef2f7" }}>
             <div style={{ fontSize: 12, opacity: 0.7 }}>Eligibility</div>
