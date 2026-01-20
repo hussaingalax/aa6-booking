@@ -21,25 +21,23 @@ export function useBookings() {
   const [error, setError] = useState("");
 
   async function load() {
-    setLoading(true);
-    setError("");
-    const res = await supabase
-      .from("aa6_bookings")
-      .select("*")
-      .order("created_at", { ascending: false });
+  setLoading(true);
+  setError("");
 
-    if (res.error) setError(res.error.message);
-else
-  setRows(
-    ((res.data || []) as any[]).map((r) => ({
-      ...r,
-      payment_status: r.payment_status ?? r.status ?? "pending",
-    })) as BookingRow[]
-  );
+  const res = await supabase
+    .from("aa6_bookings")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-
-    setLoading(false);
+  if (res.error) {
+    setError(res.error.message);
+    setRows([]);
+  } else {
+    setRows((res.data || []) as BookingRow[]);
   }
+
+  setLoading(false);
+}
 
   useEffect(() => {
     load();
