@@ -30,6 +30,14 @@ export function useBookings() {
 
     if (res.error) setError(res.error.message);
     else setRows((res.data || []) as BookingRow[]);
+    else
+  setRows(
+    ((res.data || []) as any[]).map((r) => ({
+      ...r,
+      payment_status: r.payment_status ?? r.status ?? "pending",
+    })) as BookingRow[]
+  );
+
     setLoading(false);
   }
 
